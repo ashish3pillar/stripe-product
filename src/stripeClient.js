@@ -1,28 +1,19 @@
-import Stripe from 'stripe';
-
+import axios from 'axios';
+const instance = axios.create({
+  baseURL: 'https://0czdlgfi7g.execute-api.us-east-1.amazonaws.com/v1/',
+  timeout: 1000,
+  headers: {
+    'x-api-key': 'Q12nWBufRV8FczOZCXJVG11tXBkxxu152dsTqj36',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Credentials': 'true',
+    'Content-Type': 'application/json',
+  },
+});
 export default class StripeClient {
-  constructor() {
-    this.stripe = new Stripe(
-      'sk_test_51M2GNCEr4p5zg8WUOnBrMHzZ76OChbP1m7oQxOUYHl8oEyZJCkEp7RpLT9BVroW8Rc2An03HlChC7MAj0rCRBD0i00xT0swNVj',
-      {
-        apiVersion: '2022-11-15',
-      }
-    );
-  }
-
   async getProducts(category = 'course', pageSize = 1, pageLink = null) {
     try {
-      const query = pageLink
-        ? {
-            query: `active:'true' AND metadata['category']:'${category}'`,
-            limit: pageSize,
-            page: pageLink,
-          }
-        : {
-            query: `active:'true' AND metadata['category']:'${category}'`,
-            limit: pageSize,
-          };
-      const products = await this.stripe.products.search(query);
+      const query = `category=${category}&limit=${pageSize}`;
+      const products = await instance.get(`stripe/product/search?${query}`);
       console.log('getProducts - ', products);
       const result = products.data.map((product) => {
         return {
@@ -41,7 +32,7 @@ export default class StripeClient {
   }
 
   async getProductById(id) {
-    const product = await this.stripe.products.retrieve(id);
+    const product = await instance.get(`stripe/product/${id}`);
     return {
       id: product.id,
       image: product.images.length > 0 ? product.images[0] : '',
