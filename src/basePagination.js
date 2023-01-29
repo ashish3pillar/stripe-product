@@ -29,13 +29,15 @@ export default class BasePagination {
 
     const products = await this._fetchMoreProducts(search);
 
-    console.log('base page ', products);
-    return {
+    console.log('base pagination', products);
+    const response = {
       pagination: {
         hasNextPage: this.hasNextProductPage,
       },
       products: products.map(this.dataTransformer),
     };
+    console.log('base pagination response', response);
+    return response;
   }
 
   /**

@@ -5,12 +5,13 @@ import makeProductPagination from './productPagination';
 import logo from './logo.png';
 const client = new StripeClient();
 const makeProductSearchResolver = async (sdk) => {
+  console.log('makeProductSearchResolver entry');
   const pagination = await makeProductPagination(client);
-  console.log('makeProductSearchResolver');
   return (search) => pagination.fetchNext(search);
 };
 
 const fetchProductPreviews = async (skus) => {
+  console.log('fetchProductPreviews entry');
   if (!skus.length) {
     return [];
   }
@@ -41,6 +42,7 @@ function validateParameters(parameters) {
 }
 
 async function renderDialog(sdk) {
+  console.log('renderDialog entry');
   const container = document.createElement('div');
   container.id = DIALOG_ID;
   container.style.display = 'flex';
@@ -62,6 +64,7 @@ async function renderDialog(sdk) {
 }
 
 async function openDialog(sdk, currentValue, config) {
+  console.log('openDialog entry');
   const skus = await sdk.dialogs.openCurrentApp({
     allowHeightOverflow: true,
     position: 'center',
